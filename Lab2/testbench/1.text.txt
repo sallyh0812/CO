@@ -1,0 +1,38 @@
+[00400000] 3c011001 lui $1, 4097                    ; 19: lw $t3, int_a
+[00400004] 8c2b8014 lw $11, -32748($1)
+[00400008] 3c011001 lui $1, 4097                    ; 20: lw $t4, int_b
+[0040000c] 8c2c8018 lw $12, -32744($1)
+[00400010] 3c011001 lui $1, 4097                    ; 21: lw $t5, int_c
+[00400014] 8c2d801c lw $13, -32740($1)
+[00400018] 34040001 ori $4, $0, 1                   ; 23: li $a0, 1
+[0040001c] 34090002 ori $9, $0, 2                   ; 24: li $t1, 2           # Set the maximum number of comparisons
+[00400020] 34080000 ori $8, $0, 0                   ; 25: li $t0, 0           # Outer loop counter (i)
+[00400024] 0109c02a slt $24, $8, $9                 ; 28: slt $t8, $t0, $t1   # if i>=3: end
+[00400028] 13000013 beq $24, $0, 76 [end_sort-0x00400028]; 29: beq $t8, $zero, end_sort
+[0040002c] 340a0000 ori $10, $0, 0                  ; 30: li $t2, 0           # j = 0
+[00400030] 01044020 add $8, $8, $4                  ; 31: add $t0, $t0, $a0    # i++
+[00400034] 0149c02a slt $24, $10, $9                ; 34: slt $t8, $t2, $t1   # if j>=3: outer loop
+[00400038] 1300fffa beq $24, $0, -24 [outer_loop-0x00400038]; 35: beq $t8, $zero, outer_loop  # Exit the loop if no more comparisons needed
+[0040003c] 016cc82a slt $25, $11, $12               ; 39: slt $t9, $t3, $t4
+[00400040] 13200003 beq $25, $0, 12 [swap_ab-0x00400040]; 40: beq $t9, $zero, swap_ab
+[00400044] 018dc82a slt $25, $12, $13               ; 43: slt $t9, $t4, $t5
+[00400048] 13200005 beq $25, $0, 20 [swap_bc-0x00400048]; 44: beq $t9, $zero, swap_bc
+[0040004c] 0810001c j 0x00400070 [next_iteration]   ; 46: j next_iteration    # No swaps needed, go to the next iteration
+[00400050] 01607820 add $15, $11, $0                ; 50: add $t7, $t3, $zero       # Temporary register to store int_a
+[00400054] 01805820 add $11, $12, $0                ; 51: add $t3, $t4, $zero       # int_a = int_b
+[00400058] 01e06020 add $12, $15, $0                ; 52: add $t4, $t7, $zero       # int_b = temporary
+[0040005c] 0810001c j 0x00400070 [next_iteration]   ; 54: j next_iteration    # Go to the next iteration
+[00400060] 01807820 add $15, $12, $0                ; 58: add $t7, $t4, $zero       # Temporary register to store int_b
+[00400064] 01a06020 add $12, $13, $0                ; 59: add $t4, $t5, $zero       # int_b = int_c
+[00400068] 01e06820 add $13, $15, $0                ; 60: add $t5, $t7, $zero       # int_c = temporary
+[0040006c] 0810001c j 0x00400070 [next_iteration]   ; 62: j next_iteration    # Go to the next iteration
+[00400070] 01445020 add $10, $10, $4                ; 66: add $t2, $t2, $a0    # j++
+[00400074] 0810000d j 0x00400034 [inner_loop]       ; 67: j inner_loop        # Continue inner loop
+[00400078] 3c011001 lui $1, 4097                    ; 71: sw $t3, int_a
+[0040007c] ac2b8014 sw $11, -32748($1)
+[00400080] 3c011001 lui $1, 4097                    ; 72: sw $t4, int_b
+[00400084] ac2c8018 sw $12, -32744($1)
+[00400088] 3c011001 lui $1, 4097                    ; 73: sw $t5, int_c
+[0040008c] ac2d801c sw $13, -32740($1)
+[00400090] 3c011111 lui $1, 4369                    ; 74: li      $a0, 0x11111111 # test li (lui, ori)       
+[00400094] 34241111 ori $4, $1, 4369

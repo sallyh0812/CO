@@ -1,0 +1,16 @@
+8f 88 00 00  // [00400000] lw $8, 0($28)                   ; 11: lw      $t0, 0($gp)        # Load t0 from memory t0 = 0
+21 09 00 05  // [00400004] addi $9, $8, 5                  ; 12: addi    $t1, $t0, 5        # t1 = t0 + 5, forwarding t1 = 5
+8f 89 00 04  // [00400008] lw $9, 4($28)                   ; 13: lw      $t1, 4($gp)        # t1 = 1
+21 2a 00 04  // [0040000c] addi $10, $9, 4                 ; 14: addi    $t2, $t1, 4        # t2 = t1 + 4, forwarding t2 = 5
+01 49 58 20  // [00400010] add $11, $10, $9                ; 15: add     $t3, $t2, $t1      # t3 = t2 + t1, forwarding from both t2 and t1 t3 = 9
+8f 8c 00 08  // [00400014] lw $12, 8($28)                  ; 16: lw      $t4, 8($gp)        # t4 = 2
+01 8b 68 22  // [00400018] sub $13, $12, $11               ; 17: sub     $t5, $t4, $t3      # t5 = t4 - t3, forwarding from t4 t5 = -7
+01 ac 70 25  // [0040001c] or $14, $13, $12                ; 18: or      $t6, $t5, $t4      # t6 = t5 | t4, forwarding from t5
+01 cb 78 24  // [00400020] and $15, $14, $11               ; 19: and     $t7, $t6, $t3      # t7 = t6 & t3, forwarding from t6
+11 8a 00 04  // [00400024] beq $12, $10, 16 [end-0x00400024]; 21: beq     $t4, $t2, end      # Branch if t4 == t2 == 5
+21 8c 00 01  // [00400028] addi $12, $12, 1                ; 22: addi    $t4, $t4, 1        # t4 = t4 + 1, forwarding t4 = 3
+10 00 ff fd  // [0040002c] beq $0, $0, -12 [loop-0x0040002c]; 23: beq     $0,  $0,  loop
+00 08 80 20  // [00400030] add $16, $0, $8                 ; 24: add     $s0, $0, $t0       # Will not execute if branch is taken
+00 09 88 20  // [00400034] add $17, $0, $9                 ; 25: add     $s1, $0, $t1
+01 ac 90 20  // [00400038] add $18, $13, $12               ; 27: add     $s2, $t5, $t4      # s0 = t5 + t4 = -7 + 5 = -2
+01 4b 98 2a  // [0040003c] slt $19, $10, $11               ; 28: slt     $s3, $t2, $t3      # s3 = 1
